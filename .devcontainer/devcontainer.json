@@ -1,0 +1,33 @@
+{
+  "name": "ll26env-pwn",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+
+  "runArgs": [
+    "--cap-add=SYS_PTRACE",
+    "--security-opt=seccomp=unconfined"
+  ],
+
+  "features": {
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "password": "pwn",
+      "webPort": "6080",
+      "vncPort": "5901"
+    }
+  },
+
+  "forwardPorts": [6080, 5901],
+
+  "postCreateCommand": "bash .devcontainer/postCreate.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-vscode.cpptools"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+}
