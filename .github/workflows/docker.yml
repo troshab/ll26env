@@ -47,12 +47,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Trigger Codespaces prebuild
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh api repos/${{ github.repository }}/codespaces/prebuild_jobs \
-            -X POST \
-            -f ref=master \
-            || echo "Prebuild trigger failed (may need manual trigger)"
