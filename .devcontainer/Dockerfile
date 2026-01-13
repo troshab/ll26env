@@ -50,3 +50,8 @@ RUN git clone --depth=1 https://github.com/dracula/fluxbox.git /tmp/dracula-flux
     mkdir -p /opt/themes/fluxbox && \
     cp -r /tmp/dracula-fluxbox/dracula /opt/themes/fluxbox/ && \
     rm -rf /tmp/dracula-fluxbox
+
+# pwndbg (clone to /opt, setup in user-setup.sh)
+RUN git clone --depth=1 https://github.com/pwndbg/pwndbg.git /opt/pwndbg && \
+    cd /opt/pwndbg && \
+    ./setup.sh

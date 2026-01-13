@@ -8,13 +8,10 @@ REPO_DIR="/workspaces/ll26env"
 CONFIG_DIR="$REPO_DIR/.devcontainer"
 
 # =====================================================
-# PWNDBG (needs $HOME)
+# PWNDBG (link from /opt)
 # =====================================================
-echo "=== Installing pwndbg ==="
-if [ ! -d "$HOME/pwndbg" ]; then
-    git clone --depth=1 https://github.com/pwndbg/pwndbg.git "$HOME/pwndbg"
-fi
-cd "$HOME/pwndbg" && ./setup.sh
+echo "=== Linking pwndbg ==="
+ln -sf /opt/pwndbg "$HOME/pwndbg"
 
 # GDB config with MI detection
 cat > "$HOME/.gdbinit" << 'EOF'
