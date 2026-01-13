@@ -12,24 +12,33 @@ PWN lab environment for Linux binary exploitation.
 
 ## Desktop Access
 
-### Browser (noVNC)
+### Browser (noVNC) - Recommended
 Open `https://<codespace-name>-6080.app.github.dev`, password: `pwn`
 
-### Native VNC Client (recommended)
-For full keyboard support (Ctrl+W, etc.):
-1. Ports tab → 5901 → Make Public
-2. Connect with any VNC client:
-   - **TigerVNC:** `vncviewer <codespace-name>-5901.app.github.dev`
-   - **RealVNC, Remmina, etc.**
-3. Password: `pwn`
+Right-click on desktop for application menu.
+
+### Native VNC Client
+**Note:** VNC port 5901 requires VS Code Desktop (not browser). Codespaces web port forwarding only supports HTTP(S).
+
+1. Open in VS Code Desktop (not browser)
+2. Ports tab → 5901 should be forwarded to localhost:5901
+3. Connect with any VNC client to `localhost:5901`
+4. Password: `pwn`
 
 ## Tools
 
-- gdb, pwndbg, pwntools (checksec), libc6-dbg
-- Ghidra, Epiphany browser
-- one_gadget, ropper, ROPgadget
-- gcc, make, nasm, binutils (objdump, readelf, nm, strings, objcopy)
-- strace, ltrace, xxd, file, tilix, geany
+- **Debuggers:** gdb, pwndbg, pwntools (checksec), libc6-dbg
+- **Disassemblers:** Ghidra, binutils (objdump, readelf, nm, strings, objcopy)
+- **ROP:** one_gadget, ropper, ROPgadget
+- **Build:** gcc, make, nasm, cmake
+- **Utils:** strace, ltrace, xxd, file, patchelf
+- **GUI:** Tilix terminal, Geany editor, Epiphany browser, Nautilus file manager
+
+## Ghidra
+
+Run from terminal: `ghidra`
+
+Or use right-click menu → Ghidra
 
 ## Homework
 
