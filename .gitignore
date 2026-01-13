@@ -1,0 +1,14 @@
+# Temp files
+tmpclaude-*
+*.tmp
+*~
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Compiled binaries
+*.o
+*.out
+core
