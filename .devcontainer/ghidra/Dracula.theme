@@ -97,5 +97,3 @@ color.custom.color4 = #6272A4 // numbers, comments, numbers in listing
 [color]system.color.bg.view = color.custom.background
 [color]system.color.fg.view = color.custom.white
 
-font.monospaced = Ubuntu Mono-PLAIN-14
-font.* = FiraCode Nerd Font Mono Med-PLAIN-18

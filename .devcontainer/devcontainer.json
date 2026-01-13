@@ -1,8 +1,6 @@
 {
   "name": "ll26env-pwn",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
 
   "runArgs": [
     "--cap-add=SYS_PTRACE",
@@ -19,8 +17,7 @@
 
   "forwardPorts": [6080, 5901],
 
-  "postCreateCommand": "bash .devcontainer/postCreate.sh",
-  "postStartCommand": "pkill -f vncconfig || true; echo \"\\n🖥️  Desktop: https://${CODESPACE_NAME}-6080.app.github.dev (password: pwn)\\n\"",
+  "postCreateCommand": "bash .devcontainer/setup.sh",
 
   "containerEnv": {
     "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-amd64",
@@ -30,10 +27,7 @@
 
   "customizations": {
     "vscode": {
-      "extensions": [
-        "ms-python.python",
-        "ms-vscode.cpptools"
-      ],
+      "extensions": ["ms-python.python", "ms-vscode.cpptools"],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash"
       }
