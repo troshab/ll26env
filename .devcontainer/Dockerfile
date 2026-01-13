@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     openjdk-21-jdk \
     nasm ltrace strace \
     libc6-dbg xxd mailcap \
-    epiphany-browser tilix dconf-cli autocutsel geany wmctrl \
+    tilix dconf-cli autocutsel wmctrl picom \
     && rm -rf /var/lib/apt/lists/*
 
 # Python tools (latest versions as of Jan 2026)
@@ -57,11 +57,6 @@ RUN mkdir -p /opt/themes/fluxbox && \
 
 # GTK Dracula theme
 RUN git clone --depth=1 https://github.com/dracula/gtk.git /opt/themes/Dracula
-
-# Geany Dracula colorscheme
-RUN mkdir -p /opt/themes/geany && \
-    curl -fsSL -o /opt/themes/geany/Dracula-Theme.conf \
-    https://raw.githubusercontent.com/dracula/geany/master/Dracula-Theme.conf
 
 # Tilix Dracula scheme
 RUN mkdir -p /opt/themes/tilix && \

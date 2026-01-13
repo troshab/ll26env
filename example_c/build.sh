@@ -1,9 +1,15 @@
 #!/bin/bash
 # Build vulnerable C binary for exploitation practice
-# Disables stack protector and PIE for easier exploitation
+#
+# Security flags disabled:
+#   -fno-stack-protector  - disable stack canaries
+#   -no-pie               - disable ASLR (fixed addresses)
+#   -z execstack          - make stack executable
+#   -g                    - include debug symbols
 
-gcc -fno-stack-protector -no-pie -g -o vuln vuln.c
+gcc -fno-stack-protector -no-pie -z execstack -g -o vuln vuln.c
 
 echo "Built: vuln"
-echo "Run: ./vuln"
-echo "Debug: gdb ./vuln"
+echo ""
+echo "Verify protections disabled:"
+checksec --file=vuln

@@ -43,11 +43,13 @@ cp "$CONFIG_DIR/fluxbox/init" "$HOME/.fluxbox/init"
 cp "$CONFIG_DIR/fluxbox/menu" "$HOME/.fluxbox/menu"
 cp "$CONFIG_DIR/fluxbox/apps" "$HOME/.fluxbox/apps"
 
-# Add clipboard sync and kill vncconfig to startup
+# Add clipboard sync, compositor, and kill vncconfig to startup
 cat >> "$HOME/.fluxbox/startup" << 'EOF'
 # Clipboard sync for VNC
 autocutsel -fork
 autocutsel -selection PRIMARY -fork
+# Compositor for proper GTK rendering (shadows, transparency)
+picom -b
 # Kill annoying vncconfig window
 pkill -f vncconfig &
 EOF
@@ -117,36 +119,13 @@ EOF
 sudo chmod +x /usr/local/bin/ghidra
 
 # =====================================================
-# APPLICATION CONFIG
+# TILIX CONFIG
 # =====================================================
-echo "=== Configuring applications ==="
-
-# Geany
-mkdir -p "$HOME/.config/geany/colorschemes"
-if [ -f /opt/themes/geany/Dracula-Theme.conf ]; then
-  cp /opt/themes/geany/Dracula-Theme.conf "$HOME/.config/geany/colorschemes/"
-fi
-cat > "$HOME/.config/geany/geany.conf" << 'EOF'
-[geany]
-color_scheme=Dracula-Theme.conf
-EOF
-
-# Tilix
+echo "=== Configuring Tilix ==="
 mkdir -p "$HOME/.config/tilix/schemes"
 if [ -f /opt/themes/tilix/Dracula.json ]; then
   cp /opt/themes/tilix/Dracula.json "$HOME/.config/tilix/schemes/"
 fi
-
-# Default applications
-cat > "$HOME/.config/mimeapps.list" << 'EOF'
-[Default Applications]
-text/html=org.gnome.Epiphany.desktop
-x-scheme-handler/http=org.gnome.Epiphany.desktop
-x-scheme-handler/https=org.gnome.Epiphany.desktop
-text/plain=geany.desktop
-text/x-csrc=geany.desktop
-text/x-python=geany.desktop
-EOF
 
 # =====================================================
 # NOVNC CONFIG
@@ -174,8 +153,6 @@ echo "=== Setting environment ==="
 cat >> "$HOME/.bashrc" << 'EOF'
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 export PATH="$JAVA_HOME/bin:$PATH"
-export BROWSER=epiphany
-export EDITOR=geany
 
 # Desktop URL
 if [ -n "$CODESPACE_NAME" ]; then

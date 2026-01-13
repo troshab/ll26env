@@ -1,14 +1,11 @@
 [begin] (ll26env)
-  [exec] (File Manager) {nautilus}
-  [exec] (Text Editor) {geany}
   [exec] (Terminal) {tilix}
-  [exec] (Web Browser) {epiphany}
+  [exec] (File Manager) {nautilus}
   [separator]
   [exec] (Ghidra) {/opt/ghidra/ghidraRun}
   [exec] (GDB) {tilix -e gdb}
   [separator]
   [submenu] (System)
-    [exec] (Edit Menu) {geany ~/.fluxbox/menu}
     [exec] (Reload Config) {fluxbox-remote restart}
     [exec] (htop) {tilix -e htop}
   [end]

@@ -20,10 +20,10 @@
   "forwardPorts": [6080, 5901],
 
   "postCreateCommand": "bash .devcontainer/postCreate.sh",
-  "postStartCommand": "echo \"\\n🖥️  Desktop: https://${CODESPACE_NAME}-6080.app.github.dev (password: pwn)\\n\"",
+  "postStartCommand": "pkill -f vncconfig || true; echo \"\\n🖥️  Desktop: https://${CODESPACE_NAME}-6080.app.github.dev (password: pwn)\\n\"",
 
   "containerEnv": {
-    "JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-amd64",
+    "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-amd64",
     "VNC_PASSWORD": "pwn",
     "VNC_RESOLUTION": "1280x720x24",
     "WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS": "1"

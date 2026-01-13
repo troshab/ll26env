@@ -2,6 +2,8 @@
 
 PWN lab environment for Linux binary exploitation.
 
+> **Tip:** Extend idle timeout to 4 hours in [GitHub Settings → Codespaces](https://github.com/settings/codespaces) to prevent auto-sleep.
+
 ## Quick Start
 
 1. Click the button below:
