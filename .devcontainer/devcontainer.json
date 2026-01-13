@@ -7,14 +7,6 @@
     "--security-opt=seccomp=unconfined"
   ],
 
-  "features": {
-    "ghcr.io/devcontainers/features/desktop-lite:1": {
-      "password": "pwn",
-      "webPort": "6080",
-      "vncPort": "5901"
-    }
-  },
-
   "forwardPorts": [6080, 5901],
 
   "postCreateCommand": "bash .devcontainer/user-setup.sh",

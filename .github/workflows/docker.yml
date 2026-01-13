@@ -1,12 +1,12 @@
-name: Build Docker Image
+name: Build Devcontainer Image
 
 on:
   push:
     paths:
-      - '.devcontainer/Dockerfile'
+      - '.devcontainer/**'
     branches:
       - master
-  workflow_dispatch:  # Manual trigger
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -30,20 +30,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
+      - name: Build and push devcontainer
+        uses: devcontainers/ci@v0.3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=latest
-            type=sha,prefix=
-
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .devcontainer
-          file: .devcontainer/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          imageName: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          cacheFrom: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          push: always
