@@ -1,72 +1,14 @@
 #!/usr/bin/env bash
+# Minimal user setup - runs after image pull and features install
+# Heavy stuff (apt, pip, ghidra) is already in the Docker image
+
 set -euo pipefail
 
 REPO_DIR="/workspaces/ll26env"
 CONFIG_DIR="$REPO_DIR/.devcontainer"
 
 # =====================================================
-# SYSTEM PACKAGES (need sudo)
-# =====================================================
-echo "=== Installing system packages ==="
-sudo apt-get update && sudo apt-get install -y --no-install-recommends \
-    build-essential gcc g++ make cmake \
-    python3-pip python3-dev \
-    gdb gdbserver \
-    file binutils xxd \
-    xz-utils unzip \
-    patchelf socat netcat-openbsd \
-    ruby ruby-dev \
-    openjdk-21-jdk \
-    nasm ltrace strace \
-    libc6-dbg mailcap \
-    rxvt-unicode wmctrl xclip
-
-sudo rm -rf /var/lib/apt/lists/*
-
-# =====================================================
-# PYTHON TOOLS
-# =====================================================
-echo "=== Installing Python tools ==="
-python3 -m pip install --break-system-packages \
-    pwntools ropper ROPgadget capstone unicorn keystone-engine protobuf
-
-# =====================================================
-# RUBY TOOLS
-# =====================================================
-echo "=== Installing Ruby tools ==="
-sudo gem install one_gadget
-
-# =====================================================
-# GHIDRA
-# =====================================================
-echo "=== Installing Ghidra ==="
-GHIDRA_VERSION="12.0"
-GHIDRA_DATE="20251205"
-if [ ! -d /opt/ghidra ]; then
-    sudo wget -q "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_${GHIDRA_VERSION}_build/ghidra_${GHIDRA_VERSION}_PUBLIC_${GHIDRA_DATE}.zip" -O /tmp/ghidra.zip
-    sudo unzip -q /tmp/ghidra.zip -d /opt/
-    sudo mv /opt/ghidra_${GHIDRA_VERSION}_PUBLIC /opt/ghidra
-    sudo rm /tmp/ghidra.zip
-fi
-
-# gdb-vanilla for Ghidra debugger
-sudo tee /usr/local/bin/gdb-vanilla > /dev/null << 'EOF'
-#!/bin/bash
-exec /usr/bin/gdb --nx "$@"
-EOF
-sudo chmod +x /usr/local/bin/gdb-vanilla
-
-# Ghidra launcher
-sudo tee /usr/local/bin/ghidra > /dev/null << 'EOF'
-#!/bin/bash
-export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-export PATH="$JAVA_HOME/bin:$PATH"
-exec /opt/ghidra/ghidraRun "$@"
-EOF
-sudo chmod +x /usr/local/bin/ghidra
-
-# =====================================================
-# PWNDBG
+# PWNDBG (needs $HOME)
 # =====================================================
 echo "=== Installing pwndbg ==="
 if [ ! -d "$HOME/pwndbg" ]; then
@@ -85,28 +27,28 @@ end
 EOF
 
 # =====================================================
-# PTRACE
+# PTRACE (runtime setting)
 # =====================================================
 echo "=== Configuring ptrace ==="
 echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope >/dev/null || true
 
 # =====================================================
-# FLUXBOX
+# FLUXBOX (needs $HOME)
 # =====================================================
 echo "=== Configuring Fluxbox ==="
 mkdir -p "$HOME/.fluxbox/styles"
 
-# Dracula theme
-git clone --depth=1 https://github.com/dracula/fluxbox.git /tmp/dracula-fluxbox
-cp -r /tmp/dracula-fluxbox/dracula "$HOME/.fluxbox/styles/"
-rm -rf /tmp/dracula-fluxbox
+# Copy Dracula theme from image
+if [ -d /opt/themes/fluxbox/dracula ]; then
+    cp -r /opt/themes/fluxbox/dracula "$HOME/.fluxbox/styles/"
+fi
 
 # Config files
 cp "$CONFIG_DIR/fluxbox/init" "$HOME/.fluxbox/init"
 cp "$CONFIG_DIR/fluxbox/menu" "$HOME/.fluxbox/menu"
 cp "$CONFIG_DIR/fluxbox/apps" "$HOME/.fluxbox/apps"
 
-# Kill vncconfig on startup (idempotent)
+# Kill vncconfig on startup
 if [ -f "$HOME/.fluxbox/startup" ] && ! grep -q "pkill -f vncconfig" "$HOME/.fluxbox/startup"; then
     echo 'pkill -f vncconfig &' >> "$HOME/.fluxbox/startup"
 fi
@@ -117,7 +59,7 @@ sleep 1
 nohup fluxbox > /dev/null 2>&1 &
 
 # =====================================================
-# URXVT (Dracula)
+# URXVT (needs $HOME)
 # =====================================================
 echo "=== Configuring urxvt ==="
 cat > "$HOME/.Xresources" << 'EOF'
@@ -147,16 +89,17 @@ EOF
 xrdb -merge "$HOME/.Xresources" 2>/dev/null || true
 
 # =====================================================
-# GHIDRA CONFIG
+# GHIDRA CONFIG (needs $HOME)
 # =====================================================
 echo "=== Configuring Ghidra ==="
 GHIDRA_USER_DIR="$HOME/.ghidra/.ghidra_12.0_PUBLIC"
 mkdir -p "$GHIDRA_USER_DIR/themes"
 
-# System libraries for Ghidra import (symlinks)
+# Symlinks for libc import
 mkdir -p "$HOME/ghidra-libs"
 ln -sf /lib/x86_64-linux-gnu/libc.so.6 "$HOME/ghidra-libs/"
 ln -sf /lib64/ld-linux-x86-64.so.2 "$HOME/ghidra-libs/"
+
 cp "$CONFIG_DIR/ghidra/Dracula.theme" "$GHIDRA_USER_DIR/themes/"
 cat > "$GHIDRA_USER_DIR/preferences" << 'EOF'
 Theme=Dracula
@@ -164,7 +107,7 @@ SHOW_TIPS=false
 EOF
 
 # =====================================================
-# NOVNC PATCHES
+# NOVNC PATCHES (installed by feature, must patch after)
 # =====================================================
 echo "=== Patching noVNC ==="
 NOVNC_DIR="/usr/local/novnc/noVNC-1.6.0"
@@ -174,7 +117,7 @@ if [ -d "$NOVNC_DIR" ]; then
 fi
 
 # =====================================================
-# BASHRC
+# BASHRC (needs $HOME)
 # =====================================================
 echo "=== Configuring environment ==="
 if ! grep -q "JAVA_HOME=/usr/lib/jvm/java-21" "$HOME/.bashrc"; then
@@ -190,7 +133,7 @@ EOF
 fi
 
 # =====================================================
-# EXAMPLES
+# EXAMPLES (needs $HOME)
 # =====================================================
 echo "=== Copying examples ==="
 cp -r "$REPO_DIR/example_c" "$HOME/"

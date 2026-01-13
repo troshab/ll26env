@@ -1,6 +1,6 @@
 {
   "name": "ll26env-pwn",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "image": "ghcr.io/troshab/ll26env:latest",
 
   "runArgs": [
     "--cap-add=SYS_PTRACE",
@@ -17,7 +17,7 @@
 
   "forwardPorts": [6080, 5901],
 
-  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postCreateCommand": "bash .devcontainer/user-setup.sh",
 
   "containerEnv": {
     "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-amd64",
