@@ -2,6 +2,8 @@
 
 PWN lab environment for Linux binary exploitation.
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/troshab/ll26env?quickstart=1)
+
 ## Quick Start
 
 1. Fork this repo
