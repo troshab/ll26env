@@ -104,6 +104,7 @@ cp "$CONFIG_DIR/ghidra/Dracula.theme" "$GHIDRA_USER_DIR/themes/"
 cat > "$GHIDRA_USER_DIR/preferences" << 'EOF'
 Theme=Dracula
 SHOW_TIPS=false
+SHOW_HELP_ON_STARTUP=false
 EOF
 
 # =====================================================
