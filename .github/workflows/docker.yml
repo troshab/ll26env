@@ -18,7 +18,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-      codespaces: write
 
     steps:
       - name: Checkout
