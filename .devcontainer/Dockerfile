@@ -29,6 +29,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tilix \
     dconf-cli \
     autocutsel \
+    geany \
+    mime-support \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python tools

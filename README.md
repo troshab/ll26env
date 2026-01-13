@@ -29,7 +29,7 @@ For full keyboard support (Ctrl+W, etc.):
 - Ghidra, Epiphany browser
 - one_gadget, ropper, ROPgadget
 - gcc, make, nasm, binutils (objdump, readelf, nm, strings, objcopy)
-- strace, ltrace, xxd, file, tilix
+- strace, ltrace, xxd, file, tilix, geany
 
 ## Homework
 

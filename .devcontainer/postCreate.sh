@@ -20,13 +20,21 @@ rm -rf /tmp/dracula-fluxbox
 sed -i '/session.styleFile/d' "$HOME/.fluxbox/init" 2>/dev/null || true
 echo "session.styleFile: $HOME/.fluxbox/styles/dracula" >> "$HOME/.fluxbox/init"
 
-echo "=== Configuring Fluxbox startup (clipboard sync) ==="
+echo "=== Configuring Fluxbox startup ==="
 mkdir -p "$HOME/.fluxbox"
 cat >> "$HOME/.fluxbox/startup" << 'EOF'
 # Clipboard sync for VNC
 autocutsel -fork
 autocutsel -selection PRIMARY -fork
+# Hide VNC config window
+pkill vncconfig 2>/dev/null || true
 EOF
+
+echo "=== Patching noVNC for remote resize ==="
+NOVNC_HTML=$(find /usr -name "vnc.html" 2>/dev/null | head -1)
+if [ -f "$NOVNC_HTML" ]; then
+  sudo sed -i "s/resize: 'off'/resize: 'remote'/g" "$NOVNC_HTML" || true
+fi
 
 echo "=== Installing Dracula GTK theme ==="
 mkdir -p "$HOME/.themes"
@@ -54,9 +62,13 @@ EOF
 sudo chmod +x /usr/local/bin/ghidra
 
 echo "=== Adding desktop URL to bashrc ==="
-echo '' >> "$HOME/.bashrc"
-echo '# Desktop URL' >> "$HOME/.bashrc"
-echo 'echo "🖥️  Desktop: https://${CODESPACE_NAME}-6080.app.github.dev (password: pwn)"' >> "$HOME/.bashrc"
+cat >> "$HOME/.bashrc" << 'BASHRC'
+
+# Desktop URL
+if [ -n "$CODESPACE_NAME" ]; then
+  echo "🖥️  Desktop: https://${CODESPACE_NAME}-6080.app.github.dev (password: pwn)"
+fi
+BASHRC
 
 echo "=== Building test binary ==="
 mkdir -p "$HOME/test"
