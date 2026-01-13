@@ -19,8 +19,8 @@ sudo apt-get install -y --no-install-recommends \
   ltrace strace
 
 echo "=== Installing Python tools ==="
-python3 -m pip install --upgrade pip
-python3 -m pip install --upgrade \
+python3 -m pip install --break-system-packages --upgrade pip
+python3 -m pip install --break-system-packages --upgrade \
   pwntools \
   ropper \
   capstone \
