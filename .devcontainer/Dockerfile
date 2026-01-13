@@ -44,75 +44,25 @@ RUN echo '#!/bin/bash' > /usr/local/bin/gdb-vanilla && \
     chmod +x /usr/local/bin/gdb-vanilla
 
 # =====================================================
-# FLUXBOX CONFIG (must be before desktop-lite)
+# DOWNLOAD THEMES TO /opt (survives feature installation)
+# postCreate.sh will copy to /home/vscode
 # =====================================================
-RUN mkdir -p /home/vscode/.fluxbox/styles && \
+
+# Fluxbox Dracula theme
+RUN mkdir -p /opt/themes/fluxbox && \
     git clone --depth=1 https://github.com/dracula/fluxbox.git /tmp/dracula-fluxbox && \
-    cp -r /tmp/dracula-fluxbox/dracula /home/vscode/.fluxbox/styles/ && \
+    cp -r /tmp/dracula-fluxbox/dracula /opt/themes/fluxbox/ && \
     rm -rf /tmp/dracula-fluxbox
 
-# Copy fluxbox config from repo
-COPY fluxbox/init /home/vscode/.fluxbox/init
-COPY fluxbox/menu /home/vscode/.fluxbox/menu
-COPY fluxbox/apps /home/vscode/.fluxbox/apps
+# GTK Dracula theme
+RUN git clone --depth=1 https://github.com/dracula/gtk.git /opt/themes/Dracula
 
-# =====================================================
-# GTK DRACULA THEME
-# =====================================================
-RUN mkdir -p /home/vscode/.themes && \
-    git clone --depth=1 https://github.com/dracula/gtk.git /home/vscode/.themes/Dracula
+# Geany Dracula colorscheme
+RUN mkdir -p /opt/themes/geany && \
+    curl -fsSL -o /opt/themes/geany/Dracula-Theme.conf \
+    https://raw.githubusercontent.com/dracula/geany/master/Dracula-Theme.conf
 
-# GTK2 settings
-RUN echo 'gtk-theme-name="Dracula"' > /home/vscode/.gtkrc-2.0 && \
-    echo 'gtk-icon-theme-name="Dracula"' >> /home/vscode/.gtkrc-2.0
-
-# GTK3 settings
-RUN mkdir -p /home/vscode/.config/gtk-3.0 && \
-    echo '[Settings]' > /home/vscode/.config/gtk-3.0/settings.ini && \
-    echo 'gtk-theme-name=Dracula' >> /home/vscode/.config/gtk-3.0/settings.ini && \
-    echo 'gtk-icon-theme-name=Dracula' >> /home/vscode/.config/gtk-3.0/settings.ini && \
-    echo 'gtk-application-prefer-dark-theme=1' >> /home/vscode/.config/gtk-3.0/settings.ini
-
-# GTK4 settings
-RUN mkdir -p /home/vscode/.config/gtk-4.0 && \
-    echo '[Settings]' > /home/vscode/.config/gtk-4.0/settings.ini && \
-    echo 'gtk-theme-name=Dracula' >> /home/vscode/.config/gtk-4.0/settings.ini && \
-    echo 'gtk-icon-theme-name=Dracula' >> /home/vscode/.config/gtk-4.0/settings.ini && \
-    echo 'gtk-application-prefer-dark-theme=1' >> /home/vscode/.config/gtk-4.0/settings.ini
-
-# =====================================================
-# GHIDRA DRACULA THEME
-# =====================================================
-COPY ghidra/Dracula.theme /tmp/Dracula.theme
-RUN mkdir -p /home/vscode/.ghidra/.ghidra_11.2.1_PUBLIC/themes && \
-    cp /tmp/Dracula.theme /home/vscode/.ghidra/.ghidra_11.2.1_PUBLIC/themes/ && \
-    echo 'Theme=Dracula' > /home/vscode/.ghidra/.ghidra_11.2.1_PUBLIC/preferences && \
-    rm /tmp/Dracula.theme
-
-# =====================================================
-# APPLICATION CONFIG
-# =====================================================
-# Geany Dracula
-RUN mkdir -p /home/vscode/.config/geany/colorschemes && \
-    curl -fsSL -o /home/vscode/.config/geany/colorschemes/Dracula-Theme.conf \
-    https://raw.githubusercontent.com/dracula/geany/master/Dracula-Theme.conf && \
-    echo '[geany]' > /home/vscode/.config/geany/geany.conf && \
-    echo 'color_scheme=Dracula-Theme.conf' >> /home/vscode/.config/geany/geany.conf
-
-# Tilix Dracula
-RUN mkdir -p /home/vscode/.config/tilix/schemes && \
-    curl -fsSL -o /home/vscode/.config/tilix/schemes/Dracula.json \
+# Tilix Dracula scheme
+RUN mkdir -p /opt/themes/tilix && \
+    curl -fsSL -o /opt/themes/tilix/Dracula.json \
     https://raw.githubusercontent.com/dracula/tilix/master/Dracula.json
-
-# Default applications
-RUN mkdir -p /home/vscode/.config && \
-    echo '[Default Applications]' > /home/vscode/.config/mimeapps.list && \
-    echo 'text/html=org.gnome.Epiphany.desktop' >> /home/vscode/.config/mimeapps.list && \
-    echo 'x-scheme-handler/http=org.gnome.Epiphany.desktop' >> /home/vscode/.config/mimeapps.list && \
-    echo 'x-scheme-handler/https=org.gnome.Epiphany.desktop' >> /home/vscode/.config/mimeapps.list && \
-    echo 'text/plain=geany.desktop' >> /home/vscode/.config/mimeapps.list && \
-    echo 'text/x-csrc=geany.desktop' >> /home/vscode/.config/mimeapps.list && \
-    echo 'text/x-python=geany.desktop' >> /home/vscode/.config/mimeapps.list
-
-# Fix ownership
-RUN chown -R 1000:1000 /home/vscode

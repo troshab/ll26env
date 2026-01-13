@@ -1,5 +1,5 @@
 // Simple vulnerable program for testing GDB and Ghidra
-// Compile: gcc -fno-stack-protector -no-pie -o vuln vuln.c
+// Build: ./build.sh
 
 #include <stdio.h>
 #include <string.h>
