@@ -30,9 +30,9 @@ RUN python3 -m pip install --break-system-packages \
 # Ruby gems
 RUN gem install one_gadget
 
-# Ghidra 12.0 (released Dec 8, 2025)
+# Ghidra 12.0 (released Dec 5, 2025)
 ARG GHIDRA_VERSION=12.0
-ARG GHIDRA_DATE=20251208
+ARG GHIDRA_DATE=20251205
 RUN wget -q "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_${GHIDRA_VERSION}_build/ghidra_${GHIDRA_VERSION}_PUBLIC_${GHIDRA_DATE}.zip" -O /tmp/ghidra.zip && \
     unzip -q /tmp/ghidra.zip -d /opt/ && \
     mv /opt/ghidra_${GHIDRA_VERSION}_PUBLIC /opt/ghidra && \
