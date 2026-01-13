@@ -1,0 +1,9 @@
+[app] (name=vncconfig)
+  [Minimized] {yes}
+  [IconHidden] {yes}
+[end]
+
+[transient]
+  [Dimensions] {70% 70%}
+  [Position] (CENTER) {0 0}
+[end]
