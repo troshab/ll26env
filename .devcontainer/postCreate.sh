@@ -16,7 +16,8 @@ sudo apt-get install -y --no-install-recommends \
   ruby ruby-dev \
   openjdk-17-jdk \
   nasm \
-  ltrace strace
+  ltrace strace \
+  libc6-dbg
 
 echo "=== Installing Python tools ==="
 python3 -m pip install --break-system-packages --upgrade pip
