@@ -14,7 +14,7 @@ PWN lab environment for Linux binary exploitation.
 ## Tools
 
 - pwntools, pwndbg, gdb, libc6-dbg
-- Ghidra, radare2
+- Ghidra
 - one_gadget, seccomp-tools, ropper
 - gcc, nasm, patchelf
 

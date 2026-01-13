@@ -41,13 +41,6 @@ sudo gem install one_gadget
 echo "=== Installing seccomp-tools ==="
 sudo gem install seccomp-tools
 
-echo "=== Installing radare2 ==="
-if [ ! -d "$HOME/radare2" ]; then
-  git clone --depth=1 https://github.com/radareorg/radare2.git "$HOME/radare2"
-fi
-cd "$HOME/radare2"
-sys/install.sh
-
 echo "=== Installing Ghidra ==="
 GHIDRA_VERSION="11.2.1"
 GHIDRA_DATE="20241105"
@@ -68,7 +61,6 @@ gdb --version | head -1
 python3 -c "from pwn import *; print('pwntools OK')"
 which one_gadget && echo "one_gadget OK"
 which seccomp-tools && echo "seccomp-tools OK"
-which r2 && echo "radare2 OK"
 [ -f /opt/ghidra/ghidraRun ] && echo "Ghidra OK"
 
 echo "=== Setup complete ==="
