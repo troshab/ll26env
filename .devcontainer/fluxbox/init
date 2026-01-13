@@ -1,7 +1,7 @@
 session.configVersion: 13
 session.menuFile: ~/.fluxbox/menu
 session.keyFile: ~/.fluxbox/keys
-session.styleFile: /home/vscode/.fluxbox/styles/dracula
+session.styleFile: /home/vscode/.fluxbox/styles/dracula/theme.cfg
 session.screen0.workspaces: 1
 session.screen0.workspacewarping: false
 session.screen0.toolbar.widthPercent: 100

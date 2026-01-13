@@ -14,26 +14,15 @@ cd "$HOME/pwndbg"
 echo "=== Configuring GDB with MI/tty detection ==="
 # Create .gdbinit that loads pwndbg only for interactive sessions
 # Ghidra debugger uses MI interface - both stdin and stdout are pipes
-cat > "$HOME/.gdbinit" << 'GDBINIT'
+cat > "$HOME/.gdbinit" << 'EOF'
 python
-import sys
-import os
-
-def should_load_pwndbg():
-    # Skip if stdin OR stdout is not a tty (MI mode, IDE integration)
-    if not sys.stdin.isatty() or not sys.stdout.isatty():
-        return False
-    # Skip if running with -i mi flag (explicit MI mode)
-    if any('mi' in arg for arg in sys.argv):
-        return False
-    return True
-
-if should_load_pwndbg():
-    pwndbg_path = os.path.expanduser("~/pwndbg/gdbinit.py")
-    if os.path.exists(pwndbg_path):
-        gdb.execute(f"source {pwndbg_path}")
+import sys, os
+# Load pwndbg only for interactive terminal (not MI mode for Ghidra/IDEs)
+if sys.stdin.isatty() and not any('mi' in a.lower() for a in sys.argv):
+    p = os.path.expanduser("~/pwndbg/gdbinit.py")
+    if os.path.exists(p): gdb.execute(f"source {p}")
 end
-GDBINIT
+EOF
 
 echo "=== Configuring ptrace ==="
 echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope >/dev/null || true
@@ -61,8 +50,10 @@ autocutsel -fork
 autocutsel -selection PRIMARY -fork
 EOF
 
-# Restart Fluxbox to apply theme
-fluxbox-remote restart 2>/dev/null || true
+# Restart Fluxbox completely to apply theme (fluxbox-remote restart doesn't reload config)
+pkill fluxbox || true
+sleep 1
+nohup fluxbox > /dev/null 2>&1 &
 
 # =====================================================
 # GTK THEMES
@@ -103,7 +94,7 @@ EOF
 # GHIDRA CONFIG
 # =====================================================
 echo "=== Configuring Ghidra ==="
-GHIDRA_USER_DIR="$HOME/.ghidra/.ghidra_11.2.1_PUBLIC"
+GHIDRA_USER_DIR="$HOME/.ghidra/.ghidra_12.0_PUBLIC"
 mkdir -p "$GHIDRA_USER_DIR/themes"
 
 # Copy Dracula theme
@@ -165,18 +156,9 @@ pkill -f "tigervncconfig" 2>/dev/null || true
 # Patch noVNC for remote resize default
 NOVNC_DIR="/usr/local/novnc/noVNC-1.6.0"
 if [ -d "$NOVNC_DIR" ]; then
-  # Debug: show current value
-  echo "Current resize option:"
-  grep -o 'value="remote"[^>]*>' "$NOVNC_DIR/vnc.html" | head -1 || true
-
-  # More robust sed - match any variation
-  sudo sed -i 's|value="remote"|value="remote" selected|g' "$NOVNC_DIR/vnc.html" 2>/dev/null || true
-
-  # Remove duplicate selected if any
-  sudo sed -i 's|selected selected|selected|g' "$NOVNC_DIR/vnc.html" 2>/dev/null || true
-
-  echo "After patch:"
-  grep -o 'value="remote"[^>]*>' "$NOVNC_DIR/vnc.html" | head -1 || true
+  # Set default resize mode to 'remote' in JavaScript
+  sudo sed -i "s|UI.initSetting('resize', 'off')|UI.initSetting('resize', 'remote')|" "$NOVNC_DIR/app/ui.js" 2>/dev/null || true
+  echo "noVNC patched for Remote Resizing default"
 fi
 
 # =====================================================
@@ -196,29 +178,22 @@ fi
 EOF
 
 # =====================================================
-# BUILD EXAMPLES
+# COPY EXAMPLES
 # =====================================================
-echo "=== Building examples ==="
-mkdir -p "$HOME/examples"
+echo "=== Copying examples ==="
 
-# C example
-if [ -f "$REPO_DIR/example_c/vuln.c" ]; then
-  gcc -fno-stack-protector -no-pie -g -o "$HOME/examples/vuln" "$REPO_DIR/example_c/vuln.c"
-  echo "C example: ~/examples/vuln"
-fi
+# Copy example folders to home directory
+cp -r "$REPO_DIR/example_c" "$HOME/"
+cp -r "$REPO_DIR/example_asm" "$HOME/"
+cp -r "$REPO_DIR/example_shellcode" "$HOME/"
 
-# ASM example
-if [ -f "$REPO_DIR/example_asm/hello.asm" ]; then
-  nasm -f elf64 -o /tmp/hello.o "$REPO_DIR/example_asm/hello.asm"
-  ld -o "$HOME/examples/hello" /tmp/hello.o
-  echo "ASM example: ~/examples/hello"
-fi
+# Make build scripts executable
+chmod +x "$HOME"/example_*/build.sh
 
-# Shellcode tester
-if [ -f "$REPO_DIR/example_shellcode/test_shellcode.c" ]; then
-  gcc -z execstack -fno-stack-protector -o "$HOME/examples/test_shellcode" "$REPO_DIR/example_shellcode/test_shellcode.c"
-  echo "Shellcode tester: ~/examples/test_shellcode"
-fi
+echo "Examples copied to ~/"
+echo "  ~/example_c/         - C buffer overflow (run ./build.sh)"
+echo "  ~/example_asm/       - Assembly hello world (run ./build.sh)"
+echo "  ~/example_shellcode/ - Shellcode tester (run ./build.sh)"
 
 # =====================================================
 # SMOKE TEST
