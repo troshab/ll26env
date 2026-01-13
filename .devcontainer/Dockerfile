@@ -25,7 +25,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libc6-dbg \
     xxd \
     mailcap \
-    firefox-esr \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python tools
