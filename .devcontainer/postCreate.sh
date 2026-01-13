@@ -16,14 +16,47 @@ mkdir -p "$HOME/.fluxbox/styles"
 git clone --depth=1 https://github.com/dracula/fluxbox.git /tmp/dracula-fluxbox
 cp -r /tmp/dracula-fluxbox/dracula "$HOME/.fluxbox/styles/"
 rm -rf /tmp/dracula-fluxbox
-# Set Dracula as default style
+# Set Dracula as default style (replace, not append)
+sed -i '/session.styleFile/d' "$HOME/.fluxbox/init" 2>/dev/null || true
 echo "session.styleFile: $HOME/.fluxbox/styles/dracula" >> "$HOME/.fluxbox/init"
 
-echo "=== Installing Dracula theme for Qt5 (Falkon) ==="
-mkdir -p "$HOME/.config/qt5ct/colors"
-git clone --depth=1 https://github.com/dracula/qt5.git /tmp/dracula-qt5
-cp /tmp/dracula-qt5/Dracula.conf "$HOME/.config/qt5ct/colors/"
-rm -rf /tmp/dracula-qt5
+echo "=== Configuring Fluxbox startup (clipboard sync) ==="
+mkdir -p "$HOME/.fluxbox"
+cat >> "$HOME/.fluxbox/startup" << 'EOF'
+# Clipboard sync for VNC
+autocutsel -fork
+autocutsel -selection PRIMARY -fork
+EOF
+
+echo "=== Installing Dracula GTK theme ==="
+mkdir -p "$HOME/.themes"
+git clone --depth=1 https://github.com/dracula/gtk.git "$HOME/.themes/Dracula"
+mkdir -p "$HOME/.config/gtk-3.0"
+cat > "$HOME/.config/gtk-3.0/settings.ini" << 'EOF'
+[Settings]
+gtk-theme-name=Dracula
+gtk-icon-theme-name=Dracula
+gtk-application-prefer-dark-theme=1
+EOF
+
+echo "=== Installing Dracula theme for Tilix ==="
+mkdir -p "$HOME/.config/tilix/schemes"
+curl -fsSL -o "$HOME/.config/tilix/schemes/Dracula.json" \
+  https://raw.githubusercontent.com/dracula/tilix/master/Dracula.json
+
+echo "=== Creating Ghidra wrapper (JDK fix) ==="
+cat << 'EOF' | sudo tee /usr/local/bin/ghidra > /dev/null
+#!/bin/bash
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export PATH="$JAVA_HOME/bin:$PATH"
+/opt/ghidra/ghidraRun "$@"
+EOF
+sudo chmod +x /usr/local/bin/ghidra
+
+echo "=== Adding desktop URL to bashrc ==="
+echo '' >> "$HOME/.bashrc"
+echo '# Desktop URL' >> "$HOME/.bashrc"
+echo 'echo "🖥️  Desktop: https://${CODESPACE_NAME}-6080.app.github.dev (password: pwn)"' >> "$HOME/.bashrc"
 
 echo "=== Building test binary ==="
 mkdir -p "$HOME/test"

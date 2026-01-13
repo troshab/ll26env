@@ -25,8 +25,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libc6-dbg \
     xxd \
     mailcap \
-    falkon \
-    qt5ct \
+    epiphany-browser \
+    tilix \
+    dconf-cli \
+    autocutsel \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python tools
