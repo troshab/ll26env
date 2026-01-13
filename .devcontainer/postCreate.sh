@@ -17,13 +17,15 @@ sudo apt-get install -y --no-install-recommends \
   openjdk-17-jdk \
   nasm \
   ltrace strace \
-  libc6-dbg
+  libc6-dbg \
+  xxd
 
 echo "=== Installing Python tools ==="
 python3 -m pip install --break-system-packages --upgrade pip
 python3 -m pip install --break-system-packages --upgrade \
   pwntools \
   ropper \
+  ROPgadget \
   capstone \
   unicorn \
   keystone-engine
@@ -37,9 +39,6 @@ cd "$HOME/pwndbg"
 
 echo "=== Installing one_gadget ==="
 sudo gem install one_gadget
-
-echo "=== Installing seccomp-tools ==="
-sudo gem install seccomp-tools
 
 echo "=== Installing Ghidra ==="
 GHIDRA_VERSION="11.2.1"
@@ -60,7 +59,8 @@ echo "=== Smoke test ==="
 gdb --version | head -1
 python3 -c "from pwn import *; print('pwntools OK')"
 which one_gadget && echo "one_gadget OK"
-which seccomp-tools && echo "seccomp-tools OK"
+which ropper && echo "ropper OK"
+which ROPgadget && echo "ROPgadget OK"
 [ -f /opt/ghidra/ghidraRun ] && echo "Ghidra OK"
 
 echo "=== Setup complete ==="

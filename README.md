@@ -13,10 +13,11 @@ PWN lab environment for Linux binary exploitation.
 
 ## Tools
 
-- pwntools, pwndbg, gdb, libc6-dbg
+- gdb, pwndbg, pwntools (checksec), libc6-dbg
 - Ghidra
-- one_gadget, seccomp-tools, ropper
-- gcc, nasm, patchelf
+- one_gadget, ropper, ROPgadget
+- gcc, make, nasm, binutils (objdump, readelf, nm, strings, objcopy)
+- strace, ltrace, xxd, file
 
 ## Homework
 
