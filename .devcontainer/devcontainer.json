@@ -1,6 +1,8 @@
 {
   "name": "ll26env-pwn",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
 
   "runArgs": [
     "--cap-add=SYS_PTRACE",
@@ -18,6 +20,12 @@
   "forwardPorts": [6080, 5901],
 
   "postCreateCommand": "bash .devcontainer/postCreate.sh",
+  "postStartCommand": "echo \"\\n🖥️  Desktop: https://${CODESPACE_NAME}-6080.app.github.dev (password: pwn)\\n\"",
+
+  "containerEnv": {
+    "JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-amd64",
+    "VNC_PASSWORD": "pwn"
+  },
 
   "customizations": {
     "vscode": {
