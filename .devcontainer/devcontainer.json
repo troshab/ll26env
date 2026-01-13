@@ -24,7 +24,8 @@
 
   "containerEnv": {
     "JAVA_HOME": "/usr/lib/jvm/java-17-openjdk-amd64",
-    "VNC_PASSWORD": "pwn"
+    "VNC_PASSWORD": "pwn",
+    "QT_QPA_PLATFORMTHEME": "qt5ct"
   },
 
   "customizations": {

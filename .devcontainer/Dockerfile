@@ -26,11 +26,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xxd \
     mailcap \
     falkon \
+    qt5ct \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python tools
-RUN python3 -m pip install --break-system-packages --upgrade pip && \
-    python3 -m pip install --break-system-packages --upgrade \
+RUN python3 -m pip install --break-system-packages \
     pwntools \
     ropper \
     ROPgadget \

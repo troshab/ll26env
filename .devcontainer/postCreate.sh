@@ -19,6 +19,12 @@ rm -rf /tmp/dracula-fluxbox
 # Set Dracula as default style
 echo "session.styleFile: $HOME/.fluxbox/styles/dracula" >> "$HOME/.fluxbox/init"
 
+echo "=== Installing Dracula theme for Qt5 (Falkon) ==="
+mkdir -p "$HOME/.config/qt5ct/colors"
+git clone --depth=1 https://github.com/dracula/qt5.git /tmp/dracula-qt5
+cp /tmp/dracula-qt5/Dracula.conf "$HOME/.config/qt5ct/colors/"
+rm -rf /tmp/dracula-qt5
+
 echo "=== Building test binary ==="
 mkdir -p "$HOME/test"
 gcc -fno-stack-protector -no-pie -g -o "$HOME/test/vuln" /workspaces/*/test/vuln.c
