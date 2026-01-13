@@ -34,12 +34,3 @@ Right-click on desktop for application menu.
 - **Utils:** strace, ltrace, xxd, file, patchelf
 - **GUI:** Tilix terminal, Geany editor, Epiphany browser, Nautilus file manager
 
-## Ghidra
-
-Run from terminal: `ghidra`
-
-Or use right-click menu → Ghidra
-
-## Homework
-
-Put your solutions in `hw1/` - `hw10/` folders.
