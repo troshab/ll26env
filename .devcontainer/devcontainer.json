@@ -25,8 +25,7 @@
   "containerEnv": {
     "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-amd64",
     "VNC_PASSWORD": "pwn",
-    "VNC_RESOLUTION": "1280x720x24",
-    "WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS": "1"
+    "VNC_RESOLUTION": "1280x720x24"
   },
 
   "customizations": {

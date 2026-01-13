@@ -43,14 +43,8 @@ cp "$CONFIG_DIR/fluxbox/init" "$HOME/.fluxbox/init"
 cp "$CONFIG_DIR/fluxbox/menu" "$HOME/.fluxbox/menu"
 cp "$CONFIG_DIR/fluxbox/apps" "$HOME/.fluxbox/apps"
 
-# Add clipboard sync, compositor, and kill vncconfig to startup
+# Kill vncconfig on startup
 cat >> "$HOME/.fluxbox/startup" << 'EOF'
-# Clipboard sync for VNC
-autocutsel -fork
-autocutsel -selection PRIMARY -fork
-# Compositor for proper GTK rendering (shadows, transparency)
-picom -b
-# Kill annoying vncconfig window
 pkill -f vncconfig &
 EOF
 
@@ -60,39 +54,36 @@ sleep 1
 nohup fluxbox > /dev/null 2>&1 &
 
 # =====================================================
-# GTK THEMES
+# URXVT CONFIG (Dracula theme)
 # =====================================================
-echo "=== Configuring GTK themes ==="
-
-# Copy GTK theme
-mkdir -p "$HOME/.themes"
-if [ -d /opt/themes/Dracula ]; then
-  cp -r /opt/themes/Dracula "$HOME/.themes/"
-fi
-
-# GTK2
-cat > "$HOME/.gtkrc-2.0" << 'EOF'
-gtk-theme-name="Dracula"
-gtk-icon-theme-name="Dracula"
+echo "=== Configuring urxvt ==="
+cat > "$HOME/.Xresources" << 'EOF'
+! Dracula theme
+URxvt*background: #282a36
+URxvt*foreground: #f8f8f2
+URxvt*cursorColor: #f8f8f2
+URxvt*color0:  #000000
+URxvt*color1:  #ff5555
+URxvt*color2:  #50fa7b
+URxvt*color3:  #f1fa8c
+URxvt*color4:  #bd93f9
+URxvt*color5:  #ff79c6
+URxvt*color6:  #8be9fd
+URxvt*color7:  #bfbfbf
+URxvt*color8:  #4d4d4d
+URxvt*color9:  #ff6e67
+URxvt*color10: #5af78e
+URxvt*color11: #f4f99d
+URxvt*color12: #caa9fa
+URxvt*color13: #ff92d0
+URxvt*color14: #9aedfe
+URxvt*color15: #e6e6e6
+! Settings
+URxvt*font: xft:DejaVu Sans Mono:size=11
+URxvt*scrollBar: false
+URxvt*saveLines: 10000
 EOF
-
-# GTK3
-mkdir -p "$HOME/.config/gtk-3.0"
-cat > "$HOME/.config/gtk-3.0/settings.ini" << 'EOF'
-[Settings]
-gtk-theme-name=Dracula
-gtk-icon-theme-name=Dracula
-gtk-application-prefer-dark-theme=1
-EOF
-
-# GTK4
-mkdir -p "$HOME/.config/gtk-4.0"
-cat > "$HOME/.config/gtk-4.0/settings.ini" << 'EOF'
-[Settings]
-gtk-theme-name=Dracula
-gtk-icon-theme-name=Dracula
-gtk-application-prefer-dark-theme=1
-EOF
+xrdb -merge "$HOME/.Xresources" 2>/dev/null || true
 
 # =====================================================
 # GHIDRA CONFIG
@@ -117,15 +108,6 @@ export PATH="$JAVA_HOME/bin:$PATH"
 exec /opt/ghidra/ghidraRun "$@"
 EOF
 sudo chmod +x /usr/local/bin/ghidra
-
-# =====================================================
-# TILIX CONFIG
-# =====================================================
-echo "=== Configuring Tilix ==="
-mkdir -p "$HOME/.config/tilix/schemes"
-if [ -f /opt/themes/tilix/Dracula.json ]; then
-  cp /opt/themes/tilix/Dracula.json "$HOME/.config/tilix/schemes/"
-fi
 
 # =====================================================
 # NOVNC CONFIG
@@ -191,7 +173,7 @@ which ROPgadget && echo "ROPgadget OK"
 [ -f /usr/local/bin/gdb-vanilla ] && echo "gdb-vanilla OK"
 [ -d "$HOME/.fluxbox/styles/dracula" ] && echo "Fluxbox Dracula OK"
 [ -f "$GHIDRA_USER_DIR/themes/Dracula.theme" ] && echo "Ghidra Dracula OK"
-[ -d "$HOME/.themes/Dracula" ] && echo "GTK Dracula OK"
+[ -f "$HOME/.Xresources" ] && echo "urxvt Dracula OK"
 
 echo "=== Setup complete ==="
 echo "Desktop: port 6080 (password: pwn)"

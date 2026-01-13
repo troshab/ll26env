@@ -1,12 +1,11 @@
 [begin] (ll26env)
-  [exec] (Terminal) {tilix}
-  [exec] (File Manager) {nautilus}
+  [exec] (Terminal) {urxvt}
   [separator]
   [exec] (Ghidra) {/opt/ghidra/ghidraRun}
-  [exec] (GDB) {tilix -e gdb}
+  [exec] (GDB) {urxvt -e gdb}
   [separator]
   [submenu] (System)
     [exec] (Reload Config) {fluxbox-remote restart}
-    [exec] (htop) {tilix -e htop}
+    [exec] (htop) {urxvt -e htop}
   [end]
 [end]

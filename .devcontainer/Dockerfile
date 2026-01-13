@@ -3,9 +3,6 @@ FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
-ENV GTK_THEME=Dracula
-ENV GDK_SCALE=1
-ENV GDK_DPI_SCALE=1
 
 # System packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -20,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     openjdk-21-jdk \
     nasm ltrace strace \
     libc6-dbg xxd mailcap \
-    tilix dconf-cli autocutsel wmctrl picom \
+    rxvt-unicode wmctrl xclip \
     && rm -rf /var/lib/apt/lists/*
 
 # Python tools (latest versions as of Jan 2026)
@@ -55,10 +52,3 @@ RUN mkdir -p /opt/themes/fluxbox && \
     cp -r /tmp/dracula-fluxbox/dracula /opt/themes/fluxbox/ && \
     rm -rf /tmp/dracula-fluxbox
 
-# GTK Dracula theme
-RUN git clone --depth=1 https://github.com/dracula/gtk.git /opt/themes/Dracula
-
-# Tilix Dracula scheme
-RUN mkdir -p /opt/themes/tilix && \
-    curl -fsSL -o /opt/themes/tilix/Dracula.json \
-    https://raw.githubusercontent.com/dracula/tilix/master/Dracula.json

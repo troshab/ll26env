@@ -12,7 +12,7 @@ PWN lab environment for Linux binary exploitation.
 
 2. Wait for setup (~2 min with prebuilds)
 
-3. Open Desktop: Ports tab → click globe icon on port 6080, or open `https://<codespace-name>-6080.app.github.dev` manually. Password: `pwn`
+3. VNC Desktop: Ports tab → click globe icon on port 6080. Password: `pwn`
 
 4. Right-click on desktop for application menu (Ghidra, terminal, etc.)
 
