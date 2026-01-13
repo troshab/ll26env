@@ -30,7 +30,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dconf-cli \
     autocutsel \
     geany \
-    mime-support \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python tools
