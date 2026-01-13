@@ -15,11 +15,7 @@ echo "=== Configuring ptrace ==="
 echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope >/dev/null || true
 
 echo "=== Installing Dracula themes ==="
-# Fluxbox Dracula style
-mkdir -p "$HOME/.fluxbox/styles"
-git clone --depth=1 https://github.com/dracula/fluxbox.git /tmp/dracula-fluxbox
-cp -r /tmp/dracula-fluxbox/dracula "$HOME/.fluxbox/styles/"
-rm -rf /tmp/dracula-fluxbox
+# Fluxbox style is already in Dockerfile
 
 # GTK Dracula theme
 mkdir -p "$HOME/.themes"
@@ -70,16 +66,24 @@ EOF
 echo "=== Restarting Fluxbox to apply config ==="
 fluxbox-remote restart || true
 
+echo "=== Killing vncconfig window ==="
+pkill -f "vncconfig" || true
+pkill -f "tigervncconfig" || true
+
 echo "=== Patching noVNC for remote resize ==="
-NOVNC_HTML=$(find /usr -name "vnc.html" 2>/dev/null | head -1)
-if [ -f "$NOVNC_HTML" ]; then
-  sudo sed -i "s/resize: 'off'/resize: 'remote'/g" "$NOVNC_HTML" || true
+# noVNC 1.6.0 path in desktop-lite
+NOVNC_DIR="/usr/local/novnc/noVNC-1.6.0"
+if [ -d "$NOVNC_DIR" ]; then
+  # Set remote resize as default in the select element
+  sudo sed -i 's/<option value="remote">Remote resizing/<option value="remote" selected>Remote resizing/' "$NOVNC_DIR/vnc.html" || true
+  # Also patch app.js if it has a default
+  sudo sed -i "s/resize: 'off'/resize: 'remote'/g" "$NOVNC_DIR/app/ui.js" 2>/dev/null || true
 fi
 
 echo "=== Creating Ghidra launcher ==="
 cat << 'EOF' | sudo tee /usr/local/bin/ghidra > /dev/null
 #!/bin/bash
-export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 export PATH="$JAVA_HOME/bin:$PATH"
 exec /opt/ghidra/ghidraRun "$@"
 EOF
@@ -87,6 +91,8 @@ sudo chmod +x /usr/local/bin/ghidra
 
 echo "=== Setting environment variables ==="
 cat >> "$HOME/.bashrc" << 'EOF'
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+export PATH="$JAVA_HOME/bin:$PATH"
 export BROWSER=epiphany
 export EDITOR=geany
 

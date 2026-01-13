@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 ENV GTK_THEME=Dracula
 
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xz-utils unzip \
     patchelf socat netcat-openbsd \
     ruby ruby-dev \
-    openjdk-17-jdk \
+    openjdk-21-jdk \
     nasm ltrace strace \
     libc6-dbg xxd mailcap \
     epiphany-browser tilix dconf-cli autocutsel geany wmctrl \
@@ -35,3 +35,10 @@ RUN wget -q "https://github.com/NationalSecurityAgency/ghidra/releases/download/
     unzip -q /tmp/ghidra.zip -d /opt/ && \
     mv /opt/ghidra_${GHIDRA_VERSION}_PUBLIC /opt/ghidra && \
     rm /tmp/ghidra.zip
+
+# Fluxbox Dracula style (must be before desktop-lite starts Fluxbox)
+RUN mkdir -p /home/vscode/.fluxbox/styles && \
+    git clone --depth=1 https://github.com/dracula/fluxbox.git /tmp/dracula-fluxbox && \
+    cp -r /tmp/dracula-fluxbox/dracula /home/vscode/.fluxbox/styles/ && \
+    rm -rf /tmp/dracula-fluxbox && \
+    chown -R 1000:1000 /home/vscode/.fluxbox
