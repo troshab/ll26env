@@ -76,11 +76,11 @@ RUN mkdir -p /home/vscode/.themes && \
 
 # Pre-configure Geany with Dracula theme
 RUN mkdir -p /home/vscode/.config/geany/colorschemes && \
-    curl -fsSL -o /home/vscode/.config/geany/colorschemes/dracula.conf \
-    https://raw.githubusercontent.com/dracula/geany/master/dracula.conf && \
+    curl -fsSL -o /home/vscode/.config/geany/colorschemes/Dracula-Theme.conf \
+    https://raw.githubusercontent.com/dracula/geany/master/Dracula-Theme.conf && \
     mkdir -p /home/vscode/.config/geany && \
     echo "[geany]" > /home/vscode/.config/geany/geany.conf && \
-    echo "color_scheme=dracula.conf" >> /home/vscode/.config/geany/geany.conf
+    echo "color_scheme=Dracula-Theme.conf" >> /home/vscode/.config/geany/geany.conf
 
 # Pre-configure Tilix with Dracula scheme
 RUN mkdir -p /home/vscode/.config/tilix/schemes && \
