@@ -23,11 +23,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     epiphany-browser tilix dconf-cli autocutsel geany wmctrl \
     && rm -rf /var/lib/apt/lists/*
 
-# Python tools
+# Python tools (latest versions as of Jan 2026)
+# pwntools 4.15.0, ropper 1.13.13, ROPgadget 7.7
 RUN python3 -m pip install --break-system-packages \
     pwntools ropper ROPgadget capstone unicorn keystone-engine protobuf
 
-# Ruby gems
+# Ruby gems (one_gadget 1.10.0)
 RUN gem install one_gadget
 
 # Ghidra 12.0 (released Dec 5, 2025)

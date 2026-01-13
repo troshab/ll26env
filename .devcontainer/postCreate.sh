@@ -43,11 +43,13 @@ cp "$CONFIG_DIR/fluxbox/init" "$HOME/.fluxbox/init"
 cp "$CONFIG_DIR/fluxbox/menu" "$HOME/.fluxbox/menu"
 cp "$CONFIG_DIR/fluxbox/apps" "$HOME/.fluxbox/apps"
 
-# Add clipboard sync to startup
+# Add clipboard sync and kill vncconfig to startup
 cat >> "$HOME/.fluxbox/startup" << 'EOF'
 # Clipboard sync for VNC
 autocutsel -fork
 autocutsel -selection PRIMARY -fork
+# Kill annoying vncconfig window
+pkill -f vncconfig &
 EOF
 
 # Restart Fluxbox completely to apply theme (fluxbox-remote restart doesn't reload config)
@@ -153,12 +155,16 @@ echo "=== Configuring noVNC ==="
 pkill -f "vncconfig" 2>/dev/null || true
 pkill -f "tigervncconfig" 2>/dev/null || true
 
-# Patch noVNC for remote resize default
+# Patch noVNC
 NOVNC_DIR="/usr/local/novnc/noVNC-1.6.0"
 if [ -d "$NOVNC_DIR" ]; then
-  # Set default resize mode to 'remote' in JavaScript
+  # Set default resize mode to 'remote'
   sudo sed -i "s|UI.initSetting('resize', 'off')|UI.initSetting('resize', 'remote')|" "$NOVNC_DIR/app/ui.js" 2>/dev/null || true
-  echo "noVNC patched for Remote Resizing default"
+
+  # Fix icon buttons visibility (bug fixed in noVNC 1.7.0, we have 1.6.0)
+  sudo sed -i 's|input:not(\[type=checkbox\]):not(\[type=radio\])|input:not([type=checkbox]):not([type=radio]):not([type=image])|g' "$NOVNC_DIR/app/styles/base.css" 2>/dev/null || true
+
+  echo "noVNC patched: Remote Resizing default, icon buttons fix"
 fi
 
 # =====================================================
