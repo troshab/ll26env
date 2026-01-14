@@ -23,6 +23,16 @@ PWN lab environment for Linux binary exploitation.
 2. Click 🌐 on port **6080**
 3. Click **Connect** in browser
 
+### VS Code Desktop (local IDE)
+
+Run VS Code locally while using Codespaces compute:
+
+1. Install [VS Code](https://code.visualstudio.com/) + [GitHub Codespaces extension](https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces)
+2. `Ctrl+Shift+P` → **"Codespaces: Connect to Codespace"**
+3. Select your codespace
+
+> Ports are automatically forwarded to localhost.
+
 ### VNC Client (better performance)
 
 For smoother Ghidra experience, use SSH tunnel + native VNC client:
