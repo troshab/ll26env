@@ -4,6 +4,15 @@
     "dockerfile": "Dockerfile"
   },
 
+  "features": {
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "password": "pwn",
+      "webPort": "6080",
+      "vncPort": "5901"
+    },
+    "ghcr.io/devcontainers/features/sshd:1": {}
+  },
+
   "runArgs": [
     "--platform=linux/amd64",
     "--cap-add=SYS_PTRACE",

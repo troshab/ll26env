@@ -105,6 +105,16 @@ SHOW_HELP_ON_STARTUP=false
 EOF
 
 # =====================================================
+# NOVNC PATCHES (resize + input fix)
+# =====================================================
+echo "=== Patching noVNC ==="
+NOVNC_DIR="/usr/local/novnc/noVNC-1.6.0"
+if [ -d "$NOVNC_DIR" ]; then
+    sudo sed -i "s|UI.initSetting('resize', 'off')|UI.initSetting('resize', 'remote')|" "$NOVNC_DIR/app/ui.js" 2>/dev/null || true
+    sudo sed -i 's|input:not(\[type=checkbox\]):not(\[type=radio\])|input:not([type=checkbox]):not([type=radio]):not([type=image])|g' "$NOVNC_DIR/app/styles/base.css" 2>/dev/null || true
+fi
+
+# =====================================================
 # BASHRC (needs $HOME)
 # =====================================================
 echo "=== Configuring environment ==="
