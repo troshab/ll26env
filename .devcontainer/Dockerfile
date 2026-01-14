@@ -51,7 +51,9 @@ RUN git clone --depth=1 https://github.com/dracula/fluxbox.git /tmp/dracula-flux
     cp -r /tmp/dracula-fluxbox/dracula /opt/themes/fluxbox/ && \
     rm -rf /tmp/dracula-fluxbox
 
-# pwndbg (clone to /opt, setup in user-setup.sh)
+# pwndbg
 RUN git clone --depth=1 https://github.com/pwndbg/pwndbg.git /opt/pwndbg && \
     cd /opt/pwndbg && \
-    ./setup.sh
+    ./setup.sh && \
+    pip install --break-system-packages uv && \
+    uv sync
