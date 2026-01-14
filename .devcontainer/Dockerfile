@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nasm ltrace strace \
     libc6-dbg mailcap \
     rxvt-unicode wmctrl xclip \
+    geany geany-plugins picom epiphany-browser \
     && rm -rf /var/lib/apt/lists/*
 
 # Python tools
@@ -50,6 +51,13 @@ RUN git clone --depth=1 https://github.com/dracula/fluxbox.git /tmp/dracula-flux
     mkdir -p /opt/themes/fluxbox && \
     cp -r /tmp/dracula-fluxbox/dracula /opt/themes/fluxbox/ && \
     rm -rf /tmp/dracula-fluxbox
+
+# GTK Dracula theme
+RUN git clone --depth=1 https://github.com/dracula/gtk.git /tmp/dracula-gtk && \
+    mkdir -p /usr/share/themes && \
+    cp -r /tmp/dracula-gtk/gtk-4.0 /usr/share/themes/Dracula && \
+    cp -r /tmp/dracula-gtk/gtk-3.0 /usr/share/themes/Dracula/ && \
+    rm -rf /tmp/dracula-gtk
 
 # pwndbg - install, trigger auto-update, make writable
 RUN git clone --depth=1 https://github.com/pwndbg/pwndbg.git /opt/pwndbg && \

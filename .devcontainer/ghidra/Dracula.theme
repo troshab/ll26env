@@ -83,7 +83,7 @@ color.palette.lightgray = #282A36
 color.custom.selected =  #44475A
 color.custom.highlight = #BD93F9
 
-system.color.bg.control = #282A36
+[color]system.color.bg.control = color.custom.background
 
 
 color.custom.background = #282A36

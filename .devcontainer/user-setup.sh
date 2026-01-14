@@ -52,10 +52,13 @@ cp "$CONFIG_DIR/fluxbox/init" "$HOME/.fluxbox/init"
 cp "$CONFIG_DIR/fluxbox/menu" "$HOME/.fluxbox/menu"
 cp "$CONFIG_DIR/fluxbox/apps" "$HOME/.fluxbox/apps"
 
-# Kill vncconfig on startup
-if [ -f "$HOME/.fluxbox/startup" ] && ! grep -q "pkill -f vncconfig" "$HOME/.fluxbox/startup"; then
-    echo 'pkill -f vncconfig &' >> "$HOME/.fluxbox/startup"
-fi
+# Create startup file (vncconfig needed for clipboard - don't kill it)
+cat > "$HOME/.fluxbox/startup" << 'STARTUP'
+#!/bin/bash
+picom -b --no-vsync &
+exec fluxbox
+STARTUP
+chmod +x "$HOME/.fluxbox/startup"
 
 # Restart Fluxbox
 pkill fluxbox || true
@@ -93,6 +96,24 @@ EOF
 xrdb -merge "$HOME/.Xresources" 2>/dev/null || true
 
 # =====================================================
+# GTK THEME (Dracula)
+# =====================================================
+echo "=== Configuring GTK ==="
+mkdir -p "$HOME/.config/gtk-3.0" "$HOME/.config/gtk-4.0"
+
+cat > "$HOME/.config/gtk-3.0/settings.ini" << 'EOF'
+[Settings]
+gtk-theme-name=Dracula
+gtk-application-prefer-dark-theme=true
+EOF
+
+cat > "$HOME/.config/gtk-4.0/settings.ini" << 'EOF'
+[Settings]
+gtk-theme-name=Dracula
+gtk-application-prefer-dark-theme=true
+EOF
+
+# =====================================================
 # GHIDRA CONFIG (needs $HOME)
 # =====================================================
 echo "=== Configuring Ghidra ==="
@@ -112,13 +133,20 @@ SHOW_HELP_ON_STARTUP=false
 EOF
 
 # =====================================================
-# NOVNC PATCHES (resize + input fix)
+# NOVNC PATCHES (resize + input fix + clipboard)
 # =====================================================
 echo "=== Patching noVNC ==="
 NOVNC_DIR="/usr/local/novnc/noVNC-1.6.0"
 if [ -d "$NOVNC_DIR" ]; then
+    # Resize mode: remote instead of off
     sudo sed -i "s|UI.initSetting('resize', 'off')|UI.initSetting('resize', 'remote')|" "$NOVNC_DIR/app/ui.js" 2>/dev/null || true
+    # Input fix for image type
     sudo sed -i 's|input:not(\[type=checkbox\]):not(\[type=radio\])|input:not([type=checkbox]):not([type=radio]):not([type=image])|g' "$NOVNC_DIR/app/styles/base.css" 2>/dev/null || true
+    # Clipboard sync script
+    sudo cp "$CONFIG_DIR/novnc/clipboard.js" "$NOVNC_DIR/app/clipboard.js"
+    if ! grep -q "clipboard.js" "$NOVNC_DIR/vnc.html"; then
+        sudo sed -i '/<\/head>/i \    <script src="app/clipboard.js"></script>' "$NOVNC_DIR/vnc.html"
+    fi
 fi
 
 # =====================================================
