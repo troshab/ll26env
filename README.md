@@ -18,16 +18,25 @@ PWN lab environment for Linux binary exploitation.
 
 ## Desktop Access
 
-### Browser (noVNC)
-Open port **6080** in your browser.
+### Browser (noVNC) - Recommended
+1. Open **Ports** tab in VS Code
+2. Click 🌐 on port **6080**
+3. Click **Connect** in browser
 
 ### VNC Client (better performance)
-For smoother experience, use a native VNC client:
 
-1. Install [TigerVNC Viewer](https://tigervnc.org/) or [RealVNC](https://www.realvnc.com/en/connect/download/viewer/)
+For smoother Ghidra experience, use SSH tunnel + native VNC client:
+
+```bash
+# Terminal on your local machine (not in codespace)
+gh codespace ssh -- -L 5901:localhost:5901
+```
+
+Keep this terminal open, then:
+1. Open [TigerVNC](https://tigervnc.org/) or [RealVNC](https://www.realvnc.com/en/connect/download/viewer/)
 2. Connect to `localhost:5901`
 
-> Native VNC provides better responsiveness for Ghidra and other GUI tools.
+> **Note:** Requires [GitHub CLI](https://cli.github.com/) installed locally.
 
 ## Tools
 
