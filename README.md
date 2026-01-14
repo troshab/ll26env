@@ -18,37 +18,29 @@ PWN lab environment for Linux binary exploitation.
 
 ## Desktop Access
 
-### VS Code Desktop (recommended)
+### Remote (browser only)
 
-Best experience - local IDE with Codespaces compute:
+Zero setup - everything in browser:
 
-1. Install [VS Code](https://code.visualstudio.com/) + [GitHub Codespaces extension](https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces)
-2. `Ctrl+Shift+P` → **"Codespaces: Connect to Codespace"**
-3. Ports automatically forwarded to localhost
-4. Open VNC: Ports tab → 🌐 on port **6080**
-
-### Browser (noVNC)
-
-Zero setup - works directly in browser without local VS Code:
-
-1. Open **Ports** tab in VS Code (web)
+1. Open **Ports** tab in VS Code
 2. Click 🌐 on port **6080**
 3. Click **Connect**
 
-### SSH + Native VNC
+### Local (recommended)
 
-Full SSH access + smoother graphics for Ghidra:
+Better performance with local software:
 
+**VS Code Desktop:**
+1. Install [VS Code](https://code.visualstudio.com/) + [GitHub Codespaces extension](https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces)
+2. `Ctrl+Shift+P` → **"Codespaces: Connect to Codespace"**
+
+**SSH tunnel (alternative):**
 ```bash
-# Local terminal (requires GitHub CLI)
 gh codespace ssh -- -L 5901:localhost:5901
 ```
 
-This gives you:
-- **SSH shell** in the terminal
-- **Port 5901** forwarded to localhost
-
-Connect VNC client ([TigerVNC](https://tigervnc.org/) / [RealVNC](https://www.realvnc.com/en/connect/download/viewer/)) to `localhost:5901`
+Both methods forward ports to localhost. Then connect VNC client to `localhost:5901`:
+- [TigerVNC](https://tigervnc.org/) or [RealVNC](https://www.realvnc.com/en/connect/download/viewer/)
 
 > **RealVNC color fix:** Properties → Expert → ColorLevel = `full`
 
