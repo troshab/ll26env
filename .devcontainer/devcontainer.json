@@ -1,8 +1,11 @@
 {
   "name": "ll26env-pwn",
-  "image": "ghcr.io/troshab/ll26env:latest",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
 
   "runArgs": [
+    "--platform=linux/amd64",
     "--cap-add=SYS_PTRACE",
     "--security-opt=seccomp=unconfined"
   ],
