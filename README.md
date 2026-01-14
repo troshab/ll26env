@@ -18,21 +18,22 @@ PWN lab environment for Linux binary exploitation.
 
 ## Desktop Access
 
-### Browser (noVNC)
+### VS Code Desktop (recommended)
 
-Zero setup - works directly in browser:
-
-1. Open **Ports** tab in VS Code
-2. Click 🌐 on port **6080**
-3. Click **Connect**
-
-### VS Code Desktop
-
-Local IDE experience with Codespaces compute:
+Best experience - local IDE with Codespaces compute:
 
 1. Install [VS Code](https://code.visualstudio.com/) + [GitHub Codespaces extension](https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces)
 2. `Ctrl+Shift+P` → **"Codespaces: Connect to Codespace"**
 3. Ports automatically forwarded to localhost
+4. Open VNC: Ports tab → 🌐 on port **6080**
+
+### Browser (noVNC)
+
+Zero setup - works directly in browser without local VS Code:
+
+1. Open **Ports** tab in VS Code (web)
+2. Click 🌐 on port **6080**
+3. Click **Connect**
 
 ### SSH + Native VNC
 
