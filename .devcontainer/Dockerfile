@@ -51,9 +51,15 @@ RUN git clone --depth=1 https://github.com/dracula/fluxbox.git /tmp/dracula-flux
     cp -r /tmp/dracula-fluxbox/dracula /opt/themes/fluxbox/ && \
     rm -rf /tmp/dracula-fluxbox
 
-# pwndbg
+# pwndbg - install, trigger auto-update, make writable
 RUN git clone --depth=1 https://github.com/pwndbg/pwndbg.git /opt/pwndbg && \
     cd /opt/pwndbg && \
     ./setup.sh && \
     pip install --break-system-packages uv && \
-    uv sync
+    uv sync && \
+    chmod -R 777 /opt/pwndbg
+
+# Trigger pwndbg auto-update during build
+RUN echo "source /opt/pwndbg/gdbinit.py" > /tmp/gdbinit && \
+    gdb -nx -x /tmp/gdbinit -batch -ex "quit" || true && \
+    rm /tmp/gdbinit

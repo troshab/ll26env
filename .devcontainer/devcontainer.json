@@ -1,5 +1,6 @@
 {
   "name": "ll26env-pwn",
+  "image": "ghcr.io/troshab/ll26env:latest",
   "build": {
     "dockerfile": "Dockerfile"
   },
@@ -25,7 +26,7 @@
 
   "containerEnv": {
     "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-amd64",
-    "VNC_RESOLUTION": "1280x720x24"
+    "VNC_RESOLUTION": "1920x1080x16"
   },
 
   "customizations": {
