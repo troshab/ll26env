@@ -46,6 +46,8 @@ Keep this terminal open, then:
 1. Open [TigerVNC](https://tigervnc.org/) or [RealVNC](https://www.realvnc.com/en/connect/download/viewer/)
 2. Connect to `localhost:5901`
 
+> **RealVNC color fix:** Properties → Expert → ColorLevel = `full`
+
 > **Note:** Requires [GitHub CLI](https://cli.github.com/) installed locally.
 
 ## Tools

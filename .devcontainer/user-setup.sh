@@ -35,9 +35,16 @@ echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope >/dev/null || true
 echo "=== Configuring Fluxbox ==="
 mkdir -p "$HOME/.fluxbox/styles"
 
-# Copy Dracula theme from image
+# Copy Dracula theme from image and add window borders
 if [ -d /opt/themes/fluxbox/dracula ]; then
     cp -r /opt/themes/fluxbox/dracula "$HOME/.fluxbox/styles/"
+    # Add visible window borders (Dracula theme has none by default)
+    cat >> "$HOME/.fluxbox/styles/dracula/theme.cfg" << 'THEME'
+
+# Window borders for better visibility
+window.borderWidth: 2
+window.borderColor: #6272a4
+THEME
 fi
 
 # Config files
