@@ -132,7 +132,12 @@ export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 export PATH="$JAVA_HOME/bin:$PATH"
 
 if [ -n "$CODESPACE_NAME" ]; then
-    echo "Desktop: https://${CODESPACE_NAME}-6080.app.github.dev (password: pwn)"
+    echo ""
+    echo "=========================================="
+    echo "       ENVIRONMENT IS READY"
+    echo "=========================================="
+    echo "Desktop: https://${CODESPACE_NAME}-6080.app.github.dev/?autoconnect=true"
+    echo ""
 fi
 EOF
 fi
@@ -158,4 +163,4 @@ which ROPgadget && echo "ROPgadget OK"
 [ -f /opt/ghidra/ghidraRun ] && echo "Ghidra OK"
 
 echo "=== Setup complete ==="
-echo "Desktop: port 6080 (password: pwn)"
+echo "Desktop available on port 6080"

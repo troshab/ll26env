@@ -4,7 +4,7 @@ PWN lab environment for Linux binary exploitation.
 
 > **Tip:** Extend idle timeout to 4 hours in [GitHub Settings → Codespaces](https://github.com/settings/codespaces) to prevent auto-sleep.
 
-## Quick Start
+## How To Run Environment
 
 1. Click the button below:
 
@@ -12,19 +12,9 @@ PWN lab environment for Linux binary exploitation.
 
 2. Wait for setup (~2 min with prebuilds)
 
-3. VNC Desktop: Ports tab → click globe icon on port 6080
+3. Wait for **"ENVIRONMENT IS READY"** message in terminal
 
-4. Right-click on desktop for application menu (Ghidra, terminal, etc.)
-
-## Desktop Access
-
-### Remote (browser only)
-
-Zero setup - everything in browser:
-
-1. Open **Ports** tab in VS Code
-2. Click 🌐 on port **6080**
-3. Click **Connect**
+## How To Work In Environment
 
 ### Local (recommended)
 
@@ -44,10 +34,17 @@ Both methods forward ports to localhost. Then connect VNC client to `localhost:5
 
 > **RealVNC color fix:** Properties → Expert → ColorLevel = `full`
 
+### Remote (browser only)
+
+Zero setup - everything in browser:
+
+1. Copy the desktop link from terminal output (it auto-connects)
+2. Or open **Ports** tab in VS Code (bottom panel) → click globe icon on port **6080** → click **Connect**
+
 ## Tools
 
 - **Debuggers:** gdb, pwndbg, pwntools, libc6-dbg
 - **Disassemblers:** Ghidra, binutils (objdump, readelf, nm, strings)
 - **ROP:** one_gadget, ropper, ROPgadget
-- **Build:** gcc, make, nasm, cmake
-- **Utils:** strace, ltrace, xxd, file, patchelf
+- **Build:** gcc, g++, make, nasm, cmake
+- **Utils:** strace, ltrace, xxd, file, patchelf, checksec, socat, netcat
