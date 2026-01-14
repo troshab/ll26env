@@ -1,188 +1,188 @@
-// Clipboard sync for noVNC
+// Clipboard sync for noVNC 1.6.0+
+// Auto-enables on first user interaction
 // Handles: Ctrl+V, Ctrl+Shift+V, Cmd+V, Ctrl+X, Cmd+X
-// Does NOT intercept: Ctrl+C, Ctrl+Shift+C (let them go to remote)
 
 (function() {
   'use strict';
 
   let clipboardEnabled = false;
-  let rfb = null;
+  let initialized = false;
 
   // X11 keysyms
   const XK = {
     Control_L: 0xFFE3,
     Shift_L: 0xFFE1,
-    c: 0x0063,
     v: 0x0076,
     x: 0x0078,
-    C: 0x0043,
     V: 0x0056,
     X: 0x0058
   };
 
-  // Wait for noVNC to initialize
-  function waitForRFB(callback, timeout = 10000) {
-    const start = Date.now();
-    const check = setInterval(() => {
-      if (window.UI && window.UI.rfb) {
-        clearInterval(check);
-        callback(window.UI.rfb);
-      } else if (Date.now() - start > timeout) {
-        clearInterval(check);
-        console.warn('noVNC clipboard: RFB not found');
-      }
-    }, 100);
-  }
+  // Auto-enable clipboard on first user interaction
+  async function autoEnable() {
+    if (clipboardEnabled) return;
 
-  // Request clipboard permission (must be called from user gesture)
-  async function enableClipboard() {
     try {
-      // This may trigger permission prompt in some browsers
+      // Try to get clipboard permission
       await navigator.clipboard.readText();
     } catch (e) {
-      // Permission denied or not available - still enable partial functionality
-      console.log('Clipboard read permission:', e.message);
+      // Permission denied or empty clipboard - that's OK
     }
 
     clipboardEnabled = true;
     updateButton(true);
-    console.log('noVNC clipboard: enabled');
+    console.log('noVNC clipboard: auto-enabled');
   }
 
   function updateButton(enabled) {
-    const btn = document.getElementById('clipboardBtn');
+    const btn = document.getElementById('clipboardSyncBtn');
     if (btn) {
       btn.style.background = enabled ? '#50fa7b' : '';
       btn.title = enabled ? 'Clipboard sync enabled' : 'Click to enable clipboard sync';
     }
   }
 
-  // Remote -> Local: VNC server sends clipboard
-  function setupRemoteToLocal(rfbInstance) {
-    rfbInstance.addEventListener('clipboard', async (e) => {
-      const text = e?.detail?.text;
-      if (!text || !clipboardEnabled) return;
+  // Setup clipboard sync using noVNC's built-in clipboard textarea
+  function setup() {
+    if (initialized) return;
+    initialized = true;
 
-      try {
-        await navigator.clipboard.writeText(text);
-        console.log('noVNC clipboard: remote -> local OK');
-      } catch (err) {
-        // writeText may fail without user gesture (Firefox/Safari)
-        console.log('noVNC clipboard: remote -> local failed (need gesture)');
+    addClipboardButton();
+
+    // Auto-enable on any click or keypress
+    const enableOnce = () => {
+      autoEnable();
+      document.removeEventListener('click', enableOnce);
+      document.removeEventListener('keydown', enableOnceKey);
+    };
+    const enableOnceKey = (e) => {
+      // Only enable on actual key input, not modifier-only
+      if (!e.ctrlKey && !e.metaKey && !e.altKey) {
+        autoEnable();
       }
-    });
-  }
+    };
+    document.addEventListener('click', enableOnce);
+    document.addEventListener('keydown', enableOnceKey, { once: true });
 
-  // Send key combination to remote
-  function sendKeys(rfbInstance, keysyms) {
-    // Press all keys
-    for (const k of keysyms) {
-      rfbInstance.sendKey(k, null, true);
-    }
-    // Release in reverse order
-    for (let i = keysyms.length - 1; i >= 0; i--) {
-      rfbInstance.sendKey(keysyms[i], null, false);
-    }
-  }
-
-  // Handle paste: sync clipboard then send keystroke
-  async function handlePaste(rfbInstance, event, keysyms) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    try {
-      const text = await navigator.clipboard.readText();
-      if (text) {
-        rfbInstance.clipboardPasteFrom(text);
-        console.log('noVNC clipboard: local -> remote OK');
-      }
-    } catch (err) {
-      console.log('noVNC clipboard: read failed', err.message);
-    }
-
-    // Send the actual keystroke to trigger paste in remote app
-    sendKeys(rfbInstance, keysyms);
-  }
-
-  // Keyboard interception
-  function setupKeyInterception(rfbInstance) {
+    // Handle paste shortcuts
     document.addEventListener('keydown', async (e) => {
       if (!clipboardEnabled) return;
 
       const ctrl = e.ctrlKey;
       const shift = e.shiftKey;
-      const meta = e.metaKey; // Cmd on Mac
+      const meta = e.metaKey;
       const key = e.code;
 
-      // === PASTE shortcuts (need special handling) ===
+      // Paste: Ctrl+V, Ctrl+Shift+V, Cmd+V
+      const isPaste = key === 'KeyV' && (ctrl || meta);
+      // Cut: Ctrl+X, Cmd+X
+      const isCut = key === 'KeyX' && (ctrl || meta);
 
-      // Ctrl+V (standard)
-      if (key === 'KeyV' && ctrl && !shift && !meta) {
-        await handlePaste(rfbInstance, e, [XK.Control_L, XK.v]);
-        return;
+      if (isPaste || isCut) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text) {
+            // Put text in noVNC's clipboard textarea and trigger sync
+            const clipboardText = document.getElementById('noVNC_clipboard_text');
+            if (clipboardText) {
+              clipboardText.value = text;
+              // Trigger the input event to sync to VNC
+              clipboardText.dispatchEvent(new Event('input', { bubbles: true }));
+              clipboardText.dispatchEvent(new Event('change', { bubbles: true }));
+              console.log('noVNC clipboard: pasted to VNC clipboard');
+            }
+          }
+        } catch (err) {
+          console.log('noVNC clipboard: read failed -', err.message);
+        }
       }
+    }, true);
 
-      // Ctrl+Shift+V (terminal style)
-      if (key === 'KeyV' && ctrl && shift && !meta) {
-        await handlePaste(rfbInstance, e, [XK.Control_L, XK.Shift_L, XK.V]);
-        return;
-      }
+    // Sync from noVNC clipboard textarea to local clipboard
+    const clipboardText = document.getElementById('noVNC_clipboard_text');
+    if (clipboardText) {
+      // Watch for changes (from VNC server)
+      const observer = new MutationObserver(() => {
+        if (clipboardEnabled && clipboardText.value) {
+          navigator.clipboard.writeText(clipboardText.value).catch(() => {});
+        }
+      });
 
-      // Cmd+V (Mac) -> send as Ctrl+V to Linux
-      if (key === 'KeyV' && meta && !ctrl) {
-        await handlePaste(rfbInstance, e, [XK.Control_L, XK.v]);
-        return;
-      }
+      // Also listen for input/change events
+      ['input', 'change'].forEach(evt => {
+        clipboardText.addEventListener(evt, async () => {
+          if (!clipboardEnabled || !clipboardText.value) return;
+          try {
+            await navigator.clipboard.writeText(clipboardText.value);
+            console.log('noVNC clipboard: synced to local');
+          } catch (err) {
+            // Silently fail - might need user gesture
+          }
+        });
+      });
+    }
 
-      // === CUT shortcuts ===
-
-      // Ctrl+X
-      if (key === 'KeyX' && ctrl && !shift && !meta) {
-        await handlePaste(rfbInstance, e, [XK.Control_L, XK.x]);
-        return;
-      }
-
-      // Cmd+X (Mac) -> send as Ctrl+X
-      if (key === 'KeyX' && meta && !ctrl) {
-        await handlePaste(rfbInstance, e, [XK.Control_L, XK.x]);
-        return;
-      }
-
-      // === COPY shortcuts - DO NOT INTERCEPT ===
-      // Ctrl+C, Ctrl+Shift+C, Cmd+C
-      // Let them pass through to remote, we catch the clipboard event
-
-    }, true); // capture phase
+    console.log('noVNC clipboard: initialized (click anywhere to enable)');
   }
 
   // Add UI button
   function addClipboardButton() {
-    // Find control bar
-    const controlBar = document.getElementById('noVNC_control_bar_anchor')
-                    || document.querySelector('.noVNC_button_anchor');
-    if (!controlBar) {
-      console.warn('noVNC clipboard: control bar not found');
-      return;
-    }
+    const controlBar = document.getElementById('noVNC_control_bar');
+    if (!controlBar) return;
 
-    const btn = document.createElement('button');
-    btn.id = 'clipboardBtn';
+    const scrollContainer = controlBar.querySelector('.noVNC_scroll');
+    if (!scrollContainer) return;
+
+    if (document.getElementById('clipboardSyncBtn')) return;
+
+    const btn = document.createElement('input');
+    btn.type = 'image';
+    btn.id = 'clipboardSyncBtn';
     btn.className = 'noVNC_button';
     btn.title = 'Click to enable clipboard sync';
-    btn.innerHTML = '📋';
-    btn.style.cssText = 'font-size: 18px; padding: 4px 8px; cursor: pointer; margin: 2px;';
-    btn.addEventListener('click', enableClipboard);
+    btn.alt = 'Clipboard Sync';
+    btn.src = 'data:image/svg+xml,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">' +
+      '<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>' +
+      '<rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>' +
+      '<path d="M9 14l2 2 4-4"/>' +
+      '</svg>'
+    );
+    btn.style.cssText = 'width: 24px; height: 24px; padding: 4px;';
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      autoEnable();
+    });
 
-    controlBar.appendChild(btn);
+    const existingClipboard = document.getElementById('noVNC_clipboard_button');
+    if (existingClipboard && existingClipboard.parentNode) {
+      existingClipboard.parentNode.insertBefore(btn, existingClipboard.nextSibling);
+    } else {
+      scrollContainer.appendChild(btn);
+    }
   }
 
-  // Initialize
-  waitForRFB((rfbInstance) => {
-    rfb = rfbInstance;
-    addClipboardButton();
-    setupRemoteToLocal(rfbInstance);
-    setupKeyInterception(rfbInstance);
-    console.log('noVNC clipboard: initialized');
-  });
+  // Wait for DOM and noVNC to be ready
+  function init() {
+    const trySetup = () => {
+      // Wait for noVNC clipboard textarea to exist
+      if (document.getElementById('noVNC_clipboard_text')) {
+        setup();
+      } else {
+        setTimeout(trySetup, 200);
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', trySetup);
+    } else {
+      trySetup();
+    }
+  }
+
+  init();
 
 })();

@@ -144,8 +144,8 @@ if [ -d "$NOVNC_DIR" ]; then
     sudo sed -i 's|input:not(\[type=checkbox\]):not(\[type=radio\])|input:not([type=checkbox]):not([type=radio]):not([type=image])|g' "$NOVNC_DIR/app/styles/base.css" 2>/dev/null || true
     # Clipboard sync script
     sudo cp "$CONFIG_DIR/novnc/clipboard.js" "$NOVNC_DIR/app/clipboard.js"
-    if ! grep -q "clipboard.js" "$NOVNC_DIR/vnc.html"; then
-        sudo sed -i '/<\/head>/i \    <script src="app/clipboard.js"></script>' "$NOVNC_DIR/vnc.html"
+    if ! grep -q "clipboard.js" "$NOVNC_DIR/index.html"; then
+        sudo sed -i '/<\/head>/i \    <script src="app/clipboard.js"></script>' "$NOVNC_DIR/index.html"
     fi
 fi
 
