@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential gcc g++ make cmake \
     python3 python3-pip python3-venv python3-dev \
     gdb gdbserver \
-    file binutils xxd \
+    file binutils xxd checksec \
     xz-utils unzip \
     patchelf socat netcat-openbsd \
     ruby ruby-dev \
