@@ -14,7 +14,7 @@ PWN lab environment for Linux binary exploitation.
 
 3. Wait for **"ENVIRONMENT IS READY"** message in terminal
 
-> **Local alternative:** Install [Docker](https://www.docker.com/) + [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers), then [open in VS Code](vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/troshab/ll26env)
+> **Local alternative:** Install [Docker](https://www.docker.com/) + [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers), then <a href="vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/troshab/ll26env">open in VS Code</a>
 
 ## How To Work In Environment
 
