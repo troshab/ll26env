@@ -5,6 +5,7 @@
   [exec] (Browser) {epiphany}
   [separator]
   [exec] (Ghidra) {/opt/ghidra/ghidraRun}
+  [exec] (Binary Ninja) {/opt/binaryninja/binaryninja}
   [exec] (GDB) {urxvt -e gdb}
   [separator]
   [submenu] (System)

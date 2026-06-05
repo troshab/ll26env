@@ -189,6 +189,7 @@ which one_gadget && echo "one_gadget OK"
 which ropper && echo "ropper OK"
 which ROPgadget && echo "ROPgadget OK"
 [ -f /opt/ghidra/ghidraRun ] && echo "Ghidra OK"
+[ -f /opt/binaryninja/binaryninja ] && echo "Binary Ninja OK"
 
 echo "=== Setup complete ==="
 echo "Desktop available on port 6080"

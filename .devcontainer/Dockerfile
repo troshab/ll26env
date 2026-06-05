@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libc6-dbg mailcap \
     rxvt-unicode wmctrl xclip \
     geany geany-plugins picom epiphany-browser \
+    libxcb-cursor0 libxcb-xinerama0 libxkbcommon-x11-0 libgl1 libdbus-1-3 fontconfig \
     && rm -rf /var/lib/apt/lists/*
 
 # Python tools
@@ -58,6 +59,16 @@ RUN git clone --depth=1 https://github.com/dracula/gtk.git /tmp/dracula-gtk && \
     cp -r /tmp/dracula-gtk/gtk-4.0 /usr/share/themes/Dracula && \
     cp -r /tmp/dracula-gtk/gtk-3.0 /usr/share/themes/Dracula/ && \
     rm -rf /tmp/dracula-gtk
+
+# Binary Ninja Free (always-latest free non-commercial build)
+RUN wget -q "https://cdn.binary.ninja/installers/binaryninja_free_linux.zip" -O /tmp/binja.zip && \
+    unzip -q /tmp/binja.zip -d /opt/ && \
+    rm /tmp/binja.zip && \
+    chmod -R 777 /opt/binaryninja
+
+# Binary Ninja launcher
+RUN printf '#!/bin/bash\nexec /opt/binaryninja/binaryninja "$@"\n' > /usr/local/bin/binaryninja && \
+    chmod +x /usr/local/bin/binaryninja
 
 # pwndbg - install, trigger auto-update, make writable
 RUN git clone --depth=1 https://github.com/pwndbg/pwndbg.git /opt/pwndbg && \
