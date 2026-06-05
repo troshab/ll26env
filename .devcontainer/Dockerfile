@@ -21,7 +21,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libc6-dbg mailcap \
     rxvt-unicode wmctrl xclip \
     geany geany-plugins picom epiphany-browser \
-    libxcb-cursor0 libxcb-xinerama0 libxkbcommon-x11-0 libgl1 libdbus-1-3 fontconfig \
+    libgl1 libopengl0 libegl1 libdbus-1-3 fontconfig \
+    libxcb-cursor0 libxcb-xinerama0 libxkbcommon-x11-0 \
+    libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 \
+    libxcb-render-util0 libxcb-shape0 libxcb-util1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Python tools
