@@ -14,8 +14,7 @@
   "runArgs": [
     "--platform=linux/amd64",
     "--cap-add=SYS_PTRACE",
-    "--security-opt=seccomp=unconfined",
-    "--sysctl=kernel.randomize_va_space=0"
+    "--security-opt=seccomp=unconfined"
   ],
 
   "forwardPorts": [6080, 5901],

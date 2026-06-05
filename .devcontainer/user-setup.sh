@@ -28,6 +28,9 @@ EOF
 # =====================================================
 echo "=== Configuring ptrace ==="
 echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope >/dev/null || true
+# Disable ASLR at runtime (the --sysctl runArg is rejected by the Codespaces
+# docker daemon since randomize_va_space is non-namespaced). Best-effort.
+echo 0 | sudo tee /proc/sys/kernel/randomize_va_space >/dev/null || true
 
 # =====================================================
 # FLUXBOX (needs $HOME)
